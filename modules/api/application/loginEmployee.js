@@ -27,6 +27,10 @@ var loginEmployeeDetailsSchema = new Schema({
         type: String,
         required: true
     },
+    employeeAdress: {
+        type: String,
+        required: true
+    },
     employeeAmount: {
         type: Number,
         required :true
@@ -38,6 +42,9 @@ var loginEmployeeDetailsSchema = new Schema({
     type: {
         type: String,
         required: true
+    },
+    check:{
+        type : Boolean
     }
 }, { collection: 'loginEmployeeDetails' });
 
@@ -52,10 +59,12 @@ record.saveData = function (req, res) {
         employeePassword: postBody.employeePassword,
         employeeCnic: postBody.employeeCnic,
         employeeContact: postBody.employeeContact,
+        employeeAdress: postBody.employeeAdress,
         employeeAmount: postBody.employeeAmount,
         employeeJoinMonth: postBody.employeeJoinMonth,
-        type: postBody.type
-    }
+        type: postBody.type,
+        check : true
+    }       
     var addData = new model(data);
     addData.save(function (err, newdata) {
         if (err) {
@@ -69,7 +78,7 @@ record.saveData = function (req, res) {
             res.send({
                 statusCode: 200,
                 message: "Data has been saved",
-                newdata: data
+                newdata
             })
         }
 
@@ -95,6 +104,29 @@ record.getData = function (req, res) {
 
     });
 }
+
+// find one by id 
+record.getDataById = function (req, res) {
+    var postBody = req.params.id;
+    model.findById(postBody, function (err, newdata) {
+        if (err) {
+            res.send({
+                statusCode: 505,
+                message: "Some thing went wrong"
+            });
+        }
+        else {
+            res.send({
+                statusCode: 200,
+                message: "Data has been displayed",
+                data: newdata
+            })
+        }
+
+    });
+}
+
+
 // update customer entry
 record.updateloginEmployeeDetails = function(req,res){
     var postBody = req.params.id;
@@ -104,6 +136,7 @@ record.updateloginEmployeeDetails = function(req,res){
         employeePassword: req.body.employeePassword,
         employeeCnic: req.body.employeeCnic,
         employeeContact: req.body.employeeContact,
+        employeeAdress: req.body.employeeAdress,
         employeeJoinMonth: req.body.employeeJoinMonth,
         type: req.body.type
    } 
@@ -141,16 +174,16 @@ record.deleteData = function(req,res){
                     data:newdata 
                 })
             }
-        
         })
     }
  // update Amount
- record.updateloginEmployeeDetails = function(req,res){
+ record.updateloginEmployeeAmount = function(req,res){
     var postBody = req.params.id;
     model.findByIdAndUpdate(postBody,{
     $set : { 
-        employeeAmount: req.body.employeeAmount
-   } 
+        employeeAmount: req.body.employeeAmount,
+        check : req.body.check
+   }
     },function(err,newdata){
             if (err){
                 console.log("Error")
@@ -185,7 +218,7 @@ record.deleteData = function(req,res){
             }
             else{
                 const user  = {id:3};
-                const token = jwt.sign({user},'my_secret_key');
+                const token = jwt.sign({user},'my_secret_key',{ expiresIn: '30 days' });
                 res.send({
                     statusCode : 200,
                     message : "Login Successfully",
@@ -232,7 +265,7 @@ record.getEmployeeName = function(req,res){
                     }
               }
               else{
-                  console.log("Data not found")
+                  console.log("Data not found");
               }
               for(let m=0;m<size;m++){
                   data1[m]=newdata[m];
@@ -242,11 +275,33 @@ record.getEmployeeName = function(req,res){
                   statusCode : 200,
                    message : "Data has been displayed",
                    data:data1 
-                })
-                
+                })    
             }
-        
         });
+    }
+     // update Amount
+ record.updateloginEmployeeCheck = function(req,res){
+    var postBody = req.params.id;
+    model.findByIdAndUpdate(postBody,{
+    $set : { 
+        check: req.body.check
+   } 
+    },function(err,newdata){
+            if (err){
+                console.log("Error")
+                res.send({
+                    statusCode : 505,
+                    message : "Some thing went wrong"
+                   })
+                }
+              else{
+                res.json({
+                statusCode : 200,
+                message : "Button Pressed",  
+                data: newdata 
+                })
+            }
+        })
     }
 
 module.exports = record;

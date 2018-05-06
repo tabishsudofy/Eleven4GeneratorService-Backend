@@ -30,36 +30,23 @@ router.delete('/deleteDefaulters/:id',defaulterCustomer.deleteData);
 router.post('/saveEmployeeEntry',employeeEntry.saveData);
 router.get('/getAllEmployees',employeeEntry.getData);
 router.put('/employeeEntryUpdate/:id',employeeEntry.updateloginEmployeeDetails);
+router.put('/employeeAmountUpdate/:id',employeeEntry.updateloginEmployeeAmount);
+router.put('/employeeButtonCheck/:id',employeeEntry.updateloginEmployeeCheck);
 router.delete('/deleteEmployees/:id',employeeEntry.deleteData);
 router.post('/employeeLogin',employeeEntry.getLogin);
 router.get('/getemployeeName',employeeEntry.getEmployeeName);
+router.get('/getemployeeNameById/:id',employeeEntry.getDataById);
+
         //Send Amount Schema
 router.post('/saveSend',sendAmount.saveData);
 router.get('/getAllSends',sendAmount.getData);
-router.put('/updateSends/:id',sendAmount.updateSend);
-       //send Amount To Bank
+
+       //send Amount To Bank    
 router.post('/saveRecieved',sendToBank.saveData);
 router.get('/getAllRecieved',sendToBank.getData);
-
-        // Login Collection
-// router.post('/getLogin',login.getLogin);
-// router.put('/passUpdate',login.passUpdate);
-
-        // Drivers Record Collection
-// router.post('/addDriversRecord',records.saveData);
-// router.get('/getDriversRecord',records.getData);
-// router.delete('/deleteDriversRecord/:id',records.deleteData);
-// router.put('/updateDriversRecord/:id',records.updateDriverInfo);
-
-        // Coach Info Collection
-// router.post('/addCoachInfo',coach_records.saveData);
-// router.get('/getCoachInfo',coach_records.getData);
-// router.get('/getDloc',coach_records.getDloc);
-// router.get('/getTime',coach_records.getTime);
-// router.get('/getCoach',coach_records.getCoach);
-// router.delete('/deleteCoachInfo/:id',coach_records.deleteData);
-// router.put('/updateCoachRecords/:id',coach_records.updateCoachInfo);
-
-
+router.delete('/deletFromBank/:id',sendToBank.deleteData);
+// router.put('/updateFromBank/:id',sendToBank.updateSend);
+router.put('/updateRecievedAmount/:empBankId',sendToBank.updateSend);
+router.put('/updateCurrentRecievedAmount/:id',sendToBank.updateCurrentRecieved);
 
 module.exports = router;

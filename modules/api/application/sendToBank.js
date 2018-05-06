@@ -21,13 +21,9 @@ var recievedAmountSchema = new Schema({
     recievedAmount: {
         type: Number,
         required: true
-    },
-    month : {
-        type:String,
-        required : true
     }
     ,
-    date: {
+    empBankId: {
         type: String,
         required: true
     }
@@ -38,14 +34,13 @@ var model = mongoose.model("recievedAmount", recievedAmountSchema);
 // for seat reservation
 record.saveData = function (req, res) {
     var mydate = new Date();
-    var  mlist = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+    var mlist = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     var postBody = req.body;
     var data = {
         from: postBody.from,
-        to : postBody.to ,
+        to: postBody.to,
         recievedAmount: postBody.recievedAmount,
-        month : mlist[mydate.getMonth()],
-        date:mydate
+        empBankId: postBody.empBankId
     }
     var addData = new model(data);
     addData.save(function (err, newdata) {
@@ -56,14 +51,11 @@ record.saveData = function (req, res) {
                 message: "Unable To Save a Data"
             });
         }
-        else {
-            res.send({
-                statusCode: 200,
-                message: "Data has been saved",
-                newdata: data
-            })
-        }
-
+        res.send({
+            statusCode: 200,
+            message: "Data has been saved",
+            newdata: data
+        });
     });
 }
 
@@ -76,40 +68,91 @@ record.getData = function (req, res) {
                 message: "Some thing went wrong"
             });
         }
+        model.count({}).exec((err, count) => {
+            if (err) {
+                res.send({
+                    statusCode: 505,
+                    message: "Unable To Save a Data"
+                });
+
+            }
+            res.send({
+                statusCode: 200,
+                message: "Data has been saved",
+                data: {
+                    newdata,
+                    count
+                }
+            });
+        });
+    })
+}
+// update on the basis of others table id
+record.updateSend = function (req, res) {
+    var postBody = req.params.empBankId;
+    model.findOneAndUpdate({ empBankId: postBody }, {
+        $set: {
+            recievedAmount: req.body.recievedAmount
+        }
+    }, function (err, newdata) {
+        if (err) {
+            console.log("Error")
+            res.send({
+                statusCode: 505,
+                message: "Some thing went wrong"
+            })
+        }
+        else {
+            res.json({
+                statusCode: 200,
+                message: "Data has been updated",
+                data: newdata
+            })
+        }
+    })
+}
+record.deleteData = function (req, res) {
+    var postBody = req.params.id;
+    model.findByIdAndRemove(postBody, function (err, newdata) {
+        if (err) {
+            res.send({
+                statusCode: 505,
+                message: "Some thing went wrong"
+            })
+        }
         else {
             res.send({
                 statusCode: 200,
-                message: "Data has been displayed",
+                message: "Data has been deleted",
                 data: newdata
             })
         }
 
-    });
+    })
 }
-   
-    record.updateSend= function(req,res){
-            var postBody = req.params.id;
-            model.findByIdAndUpdate(postBody,{
-            $set : { 
-                    recievedAmount: req.body.recievedAmount
-                } 
-            },function(err,newdata){
-                    if (err){
-                        console.log("Error")
-                        res.send({
-                            statusCode : 505,
-                            message : "Some thing went wrong"
-                           })
-                        }
-                      else{
-                        res.json({
-                        statusCode : 200,
-                        message : "Data has been updated",  
-                        data: newdata 
-                        })
-                    }
-                })
-            }
-        
+record.updateCurrentRecieved = function (req, res) {
+    var postBody = req.params.id;
+    model.findByIdAndUpdate(postBody, {
+        $set: {
+           recievedAmount : req.body.recievedAmount
+        }
+    }, function (err, newdata) {
+        if (err) {
+            console.log("Error")
+            res.send({
+                statusCode: 505,
+                message: "Some thing went wrong"
+            })
+        }
+        else {
+            res.json({
+                statusCode: 200,
+                message: "Data has been updated",
+                data: newdata
+            })
+        }
+    })
+}
+
 
 module.exports = record;

@@ -22,6 +22,10 @@ var sendAmountSchema = new Schema({
         type: Number,
         required: true
     },
+    month: {
+        type: String,
+        required: true
+    },
     date: {
         type: String,
         required: true
@@ -30,14 +34,16 @@ var sendAmountSchema = new Schema({
 
 var model = mongoose.model("sendAmount", sendAmountSchema);
 
-// for seat reservation
+// for bank
 record.saveData = function (req, res) {
     var mydate = new Date();
+    var  mlist = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
     var postBody = req.body;
     var data = {
         from: postBody.from,
         to : postBody.to ,
         sendAmount: postBody.sendAmount,
+        month : mlist[mydate.getMonth()],
         date:mydate
     }
     var addData = new model(data);

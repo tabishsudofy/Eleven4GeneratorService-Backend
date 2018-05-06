@@ -34,6 +34,10 @@ var customerEntrySchema = new Schema({
         type: String,
         required: true
     },
+    month: {
+        type: String,
+        required: true
+    },
     ampere: {
         type: Number,
         required: true
@@ -48,7 +52,8 @@ var model = mongoose.model("customerEntry", customerEntrySchema);
 
 // for sava data
 record.saveData = function (req, res) {
-
+    var mydate = new Date();
+    var mlist = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
     var postBody = req.body;
     var data = {
         name: postBody.name,
@@ -57,6 +62,7 @@ record.saveData = function (req, res) {
         paid: postBody.paid,
         street_no: postBody.street_no,
         start_month: postBody.start_month,
+        month: mlist[mydate.getMonth()],
         ampere: postBody.ampere,
         amount: postBody.amount,
     }

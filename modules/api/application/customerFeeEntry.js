@@ -22,7 +22,15 @@ var customerFeeEntrySchema = new Schema({
         type: String,
         required: true
     },
+    month_date: {
+        type: String,
+        required: true
+    },
     month: {
+        type: String,
+        required: true
+    },
+    year: {
         type: String,
         required: true
     },
@@ -45,11 +53,7 @@ var customerFeeEntrySchema = new Schema({
     balance: {
         type: Number,
         required: true
-    },
-    // status: {
-    //     type: String,
-    //     required: true
-    // }
+    }
 }, { collection: 'customerFeeEntry' });
 
 var model = mongoose.model("customerFeeEntry", customerFeeEntrySchema);
@@ -64,13 +68,14 @@ record.saveData = function (req, res) {
         name: postBody.name,
         panel: postBody.panel,
         phone_no: postBody.phone_no,
+        month_date : postBody.month_date,
         month: mlist[mydate.getMonth()],
+        year : mydate.getFullYear(),
         paid: postBody.paid,
         street_no: postBody.street_no,
-        ampere: postBody.ampere,
+        ampere: postBody.ampere,    
         amount: postBody.amount,
-        balance: postBody.balance,
-        // status: postBody.status
+        balance: postBody.balance
     }
     var addData = new model(data);
     addData.save(function (err, newdata) {
